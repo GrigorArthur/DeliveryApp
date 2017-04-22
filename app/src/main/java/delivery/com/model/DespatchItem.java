@@ -9,12 +9,14 @@ public class DespatchItem {
     private String driverName;
     private String creationDate;
     private String runId;
+    private int completed;
 
     public DespatchItem() {
         despatchId = "";
         runId = "";
         driverName = "";
         creationDate = "";
+        completed = 0;
     }
 
     public void setDespatchId(String value) {
@@ -47,5 +49,13 @@ public class DespatchItem {
 
     public String getCreationDate() {
         return creationDate;
+    }
+
+    public void setCompleted(int value) {
+        this.completed = value;
+    }
+
+    public int getCompleted() {
+        return completed;
     }
 }

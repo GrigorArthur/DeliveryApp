@@ -66,28 +66,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            if (getFragmentManager().getBackStackEntryCount() > 0) {
-                getFragmentManager().popBackStack();
-            } else {
-                super.onBackPressed();
-            }
-        }
-
-    }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//        menu.clear();
-//        getMenuInflater().inflate(R.menu.activity_main_more, menu);
-        return true;
-    }*/
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int selectedIndex = -1;
 
@@ -114,6 +92,17 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.closeDrawers();
 
         return true;
+    }
+
+    public void showDespatchFragment() {
+        Fragment fragment = null;
+        fragment = DespatchFragment.newInstance();
+
+        if (fragment != null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.main_frame, fragment)
+                    .commit();
+        }
     }
 
 }

@@ -5,6 +5,8 @@
     <string name="remove_dispatch">Remove All Data</string>
     <string name="home">Home</string>
     <string name="despatch">Despatch</string>
+    <string name="downloading">Downloading Despatches...</string>
+    <string name="uploading">Uploading Despatches...</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
