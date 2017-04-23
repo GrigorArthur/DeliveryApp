@@ -1,7 +1,9 @@
 package delivery.com.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -20,6 +23,7 @@ import delivery.com.adapter.DespatchAdapter;
 import delivery.com.db.DespatchDB;
 import delivery.com.model.DespatchItem;
 import delivery.com.ui.DividerItemDecoration;
+import delivery.com.ui.OutletActivity;
 
 public class DespatchFragment extends Fragment {
 
@@ -73,6 +77,19 @@ public class DespatchFragment extends Fragment {
 
         adapter.addItems(despatches);
         adapter.notifyDataSetChanged();
+    }
+
+    public void removeDespatch(DespatchItem item) {
+        DespatchDB db = new DespatchDB(getActivity());
+        db.removeDespatch(item);
+
+        getDespatches();
+    }
+
+    public void showOutletActivity(DespatchItem item) {
+        Intent intent = new Intent(getActivity(), OutletActivity.class);
+        intent.putExtra("despatch", item);
+        startActivity(intent);
     }
 
 }

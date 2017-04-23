@@ -1,10 +1,12 @@
 package delivery.com.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Caesar on 4/21/2017.
  */
 
-public class DespatchItem {
+public class DespatchItem implements Serializable {
     private String despatchId;
     private String driverName;
     private String creationDate;

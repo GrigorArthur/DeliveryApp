@@ -7,6 +7,11 @@
     <string name="despatch">Despatch</string>
     <string name="downloading">Downloading Despatches...</string>
     <string name="uploading">Uploading Despatches...</string>
+    <string name="removing">Removing Despatches...</string>
+    <string name="remove_success">Despatches Successfully Removed.</string>
+    <string name="remove_failed">Remove Failed.</string>
+    <string name="view_crate">VIEW CRATE</string>
+    <string name="cannot_deliver">CANNOT DELIVER</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -24,9 +25,13 @@ import butterknife.OnClick;
 import delivery.com.R;
 import delivery.com.consts.StateConsts;
 import delivery.com.db.DespatchDB;
+import delivery.com.db.OutletDB;
 import delivery.com.event.DownloadDespatchEvent;
+import delivery.com.event.RemoveAllDataEvent;
 import delivery.com.model.DespatchItem;
+import delivery.com.model.OutletItem;
 import delivery.com.task.DownloadDespatchTask;
+import delivery.com.task.RemoveAllDataTask;
 import delivery.com.ui.MainActivity;
 import delivery.com.vo.DownloadDespatchResponseVo;
 
@@ -81,11 +86,30 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Subscribe
+    public void onRemoveDespatchesEvent(RemoveAllDataEvent event) {
+        hideProgressDialog();
+        boolean result = event.getRemoveResult();
+        if(result) {
+            Toast.makeText(getActivity(), R.string.remove_success, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), R.string.remove_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @OnClick(R.id.btn_download_dispatch)
     void onClickBtnDownDispatch() {
         progressDialog.setMessage(getResources().getString(R.string.downloading));
         progressDialog.show();
         startDownloadDespatch();
+    }
+
+    @OnClick(R.id.btn_remove_datas)
+    void onClickBtnRemoveData() {
+        progressDialog.setMessage(getResources().getString(R.string.removing));
+        progressDialog.show();
+        RemoveAllDataTask task = new RemoveAllDataTask(getActivity());
+        task.execute();
     }
 
     private void startDownloadDespatch() {
@@ -101,19 +125,42 @@ public class HomeFragment extends Fragment {
     private void parseDespatches(String despatches) {
         try {
             JSONArray jsonDespatchArray = new JSONArray(despatches);
-            DespatchDB db = new DespatchDB(getActivity());
+            DespatchDB despatchDB = new DespatchDB(getActivity());
+            OutletDB outletDB = new OutletDB(getActivity());
             for(int i = 0; i < jsonDespatchArray.length(); i++) {
                 JSONObject jsonDespatchItem = jsonDespatchArray.getJSONObject(i);
-                DespatchItem item = new DespatchItem();
+                DespatchItem despatchItem = new DespatchItem();
 
-                item.setDespatchId(jsonDespatchItem.getString("despatchID"));
-                item.setRunId(jsonDespatchItem.getString("run"));
-                item.setDriverName(jsonDespatchItem.getString("driver"));
-                item.setCreationDate(jsonDespatchItem.getString("date"));
-                item.setCompleted(StateConsts.DESPATCH_DEFAULT);
+                String despatchID = jsonDespatchItem.getString("despatchID");
 
-                if(!db.isExist(item))
-                    db.addDespatch(item);
+                despatchItem.setDespatchId(despatchID);
+                despatchItem.setRunId(jsonDespatchItem.getString("run"));
+                despatchItem.setDriverName(jsonDespatchItem.getString("driver"));
+                despatchItem.setCreationDate(jsonDespatchItem.getString("date"));
+                despatchItem.setCompleted(StateConsts.DESPATCH_DEFAULT);
+
+                if(!despatchDB.isExist(despatchItem)) {
+                    despatchDB.addDespatch(despatchItem);
+                    String despatchOutlet = jsonDespatchItem.getString("outlet");
+                    JSONArray jsonOutletArray = new JSONArray(despatchOutlet);
+                    for(int j = 0; j < jsonOutletArray.length(); j++) {
+                        JSONObject jsonOutletItem = jsonOutletArray.getJSONObject(j);
+
+                        OutletItem outletItem = new OutletItem();
+                        outletItem.setDespatchId(despatchID);
+                        outletItem.setOutletId(jsonOutletItem.getString("outletID"));
+                        outletItem.setOutlet(jsonOutletItem.getString("outlet"));
+                        outletItem.setAddress(jsonOutletItem.getString("address"));
+                        outletItem.setServiceType(jsonOutletItem.getString("service"));
+                        outletItem.setDelivered(jsonOutletItem.getString("delivered"));
+                        outletItem.setDeliveredTime(jsonOutletItem.getString("deliveredtime"));
+                        outletItem.setReason(0);
+                        outletItem.setCompleted(StateConsts.OUTLET_REMOVED);
+
+                        outletDB.addOutlet(outletItem);
+                        String stock = jsonOutletItem.getString("stock");
+                    }
+                }
             }
             hideProgressDialog();
 

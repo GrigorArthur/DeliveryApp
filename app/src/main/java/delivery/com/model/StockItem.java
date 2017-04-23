@@ -1,10 +1,12 @@
 package delivery.com.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Caesar on 4/21/2017.
  */
 
-public class StockItem {
+public class StockItem implements Serializable {
     private String stockId;
     private String stock;
     private int tier;

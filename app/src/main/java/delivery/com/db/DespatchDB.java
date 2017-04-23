@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 
 import delivery.com.consts.DBConsts;
-import delivery.com.consts.StateConsts;
 import delivery.com.model.DespatchItem;
 import delivery.com.util.DBHelper;
 
@@ -25,7 +24,7 @@ public class DespatchDB extends DBHelper {
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getReadableDatabase();
                 Cursor cursor = db.query(DBConsts.TABLE_NAME_DESPATCH, null, null, null, null, null, null);
-                ret = createBranchBeans(cursor);
+                ret = createDespatchBeans(cursor);
                 db.close();
             }
         } catch (IllegalStateException ex) {
@@ -105,7 +104,19 @@ public class DespatchDB extends DBHelper {
         }
     }
 
-    private ArrayList<DespatchItem> createBranchBeans(Cursor c) {
+    public void removeAllDatas() {
+        try {
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                db.delete(DBConsts.TABLE_NAME_DESPATCH, null, null);
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private ArrayList<DespatchItem> createDespatchBeans(Cursor c) {
         ArrayList<DespatchItem> ret = null;
         try {
             ret = new ArrayList();

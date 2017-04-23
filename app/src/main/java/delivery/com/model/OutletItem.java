@@ -1,28 +1,45 @@
 package delivery.com.model;
 
+
+import java.io.Serializable;
+
+import delivery.com.consts.StateConsts;
+
 /**
  * Created by Caesar on 4/21/2017.
  */
 
-public class OutletItem {
+public class OutletItem implements Serializable {
+    private String despatchId;
     private String outletId;
     private String outlet;
-    private int serviceType;
-    private int delivered;
+    private String address;
+    private String serviceType;
+    private String delivered;
     private String deliveredTime;
     private int tiers;
     private int reason;
-    private int stock;
+    private int completed;
 
     public OutletItem() {
+        this.despatchId = "";
         this.outletId = "";
         this.outlet = "";
-        this.serviceType = 0;
-        this.delivered = 0;
+        this.address = "";
+        this.serviceType = "";
+        this.delivered = "";
         this.deliveredTime = "";
         this.tiers = 0;
         this.reason = 0;
-        this.stock = 0;
+        this.completed = StateConsts.OUTLET_DEFAULT;
+    }
+
+    public void setDespatchId(String value) {
+        this.despatchId = value;
+    }
+
+    public String getDespatchId() {
+        return despatchId;
     }
 
     public void setOutletId(String value) {
@@ -32,6 +49,7 @@ public class OutletItem {
     public String getOutletId() {
         return outletId;
     }
+
     public void setOutlet(String value) {
         this.outlet = value;
     }
@@ -40,19 +58,27 @@ public class OutletItem {
         return outlet;
     }
 
-    public void setServiceType(int value) {
+    public void setAddress(String value) {
+        this.address = value;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setServiceType(String value) {
         this.serviceType = value;
     }
 
-    public int getServiceType() {
+    public String getServiceType() {
         return serviceType;
     }
 
-    public void setDelivered(int value) {
+    public void setDelivered(String value) {
         this.delivered = value;
     }
 
-    public int getDelivered() {
+    public String getDelivered() {
         return delivered;
     }
 
@@ -80,11 +106,12 @@ public class OutletItem {
         return this.reason;
     }
 
-    public void setStock(int value) {
-        this.stock = value;
+    public void setCompleted(int value) {
+        this.completed = value;
     }
 
-    public int getStock() {
-        return stock;
+    public int getCompleted() {
+        return completed;
     }
+
 }
