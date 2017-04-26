@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -66,7 +68,7 @@ public class OutletActivity extends AppCompatActivity {
         adapter = new OutletAdapter(OutletActivity.this);
         outletList.setAdapter(adapter);
 
-        getOutlets();
+
     }
 
     private void getOutlets() {
@@ -76,6 +78,13 @@ public class OutletActivity extends AppCompatActivity {
 
         adapter.addItems(outletItems);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getOutlets();
     }
 
     @Override

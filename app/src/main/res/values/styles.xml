@@ -35,6 +35,13 @@
         <item name="android:background">@drawable/button_remove</item>
     </style>
 
+    <style name="ButtonSave">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@drawable/button_save</item>
+    </style>
+
     <style name="TextDefault">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/colorBlack</item>

@@ -27,9 +27,6 @@ public class BaseProxy {
 
         responseBody = response.body().string();
 
-        // Write All resposne
-        System.out.println("Response: " + responseBody);
-
         return responseBody;
     }
 }

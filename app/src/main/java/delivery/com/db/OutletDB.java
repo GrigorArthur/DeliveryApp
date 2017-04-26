@@ -25,7 +25,7 @@ public class OutletDB extends DBHelper {
 
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getReadableDatabase();
-                Cursor cursor = db.query(DBConsts.TABLE_NAME_OUTLET, null, null, null, null, null, null);
+                Cursor cursor = db.query(DBConsts.TABLE_NAME_OUTLET, null, szWhere, null, null, null, null);
                 ret = createOutletBeans(cursor);
                 db.close();
             }
@@ -49,7 +49,6 @@ public class OutletDB extends DBHelper {
             value.put(DBConsts.FIELD_DELIVER_TIME, bean.getDeliveredTime());
             value.put(DBConsts.FIELD_TIERS, bean.getTiers());
             value.put(DBConsts.FIELD_REASON, bean.getReason());
-            value.put(DBConsts.FIELD_COMPLETED, bean.getCompleted());
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getWritableDatabase();
                 ret = db.insert(DBConsts.TABLE_NAME_OUTLET, null, value);
@@ -67,7 +66,6 @@ public class OutletDB extends DBHelper {
             String szWhere = DBConsts.FIELD_OUTLET_ID + " = '" + item.getOutletId() + "'";
             ContentValues value = new ContentValues();
             value.put(DBConsts.FIELD_REASON, item.getReason());
-            value.put(DBConsts.FIELD_COMPLETED, item.getCompleted());
             value.put(DBConsts.FIELD_DELIVERED, item.getDelivered());
             value.put(DBConsts.FIELD_DELIVER_TIME, item.getDeliveredTime());
 
@@ -87,7 +85,7 @@ public class OutletDB extends DBHelper {
 
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getReadableDatabase();
-                db.delete(DBConsts.TABLE_NAME_OUTLET, null, null);
+                db.delete(DBConsts.TABLE_NAME_OUTLET, szWhere, null);
                 db.close();
             }
         } catch (IllegalStateException ex) {
@@ -109,8 +107,7 @@ public class OutletDB extends DBHelper {
                     COL_DELIVERED 		    = c.getColumnIndexOrThrow(DBConsts.FIELD_DELIVERED),
                     COL_DELIVER_TIME         = c.getColumnIndexOrThrow(DBConsts.FIELD_DELIVER_TIME),
                     COL_TIERS   		    = c.getColumnIndexOrThrow(DBConsts.FIELD_TIERS),
-                    COL_REASON    	 	    = c.getColumnIndexOrThrow(DBConsts.FIELD_REASON),
-                    COL_COMPLETED 		    = c.getColumnIndexOrThrow(DBConsts.FIELD_COMPLETED);
+                    COL_REASON    	 	    = c.getColumnIndexOrThrow(DBConsts.FIELD_REASON);
 
             while (c.moveToNext()) {
                 OutletItem bean = new OutletItem();
@@ -119,11 +116,10 @@ public class OutletDB extends DBHelper {
                 bean.setOutlet(c.getString(COL_OUTLET));
                 bean.setAddress(c.getString(COL_ADDRESS));
                 bean.setServiceType(c.getString(COL_SERVICE));
-                bean.setDelivered(c.getString(COL_DELIVERED));
+                bean.setDelivered(c.getInt(COL_DELIVERED));
                 bean.setDeliveredTime(c.getString(COL_DELIVER_TIME));
                 bean.setTiers(c.getInt(COL_TIERS));
                 bean.setReason(c.getInt(COL_REASON));
-                bean.setCompleted(c.getInt(COL_COMPLETED));
                 ret.add(bean);
             }
 

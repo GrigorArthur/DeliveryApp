@@ -8,4 +8,8 @@ public class URLManager {
     public static String getDownloadDespatchURL() {
         return "http://glideadmin.co.uk/json/delivery.php";
     }
+
+    public static String getUploadDespatchURL() {
+        return "http://glideadmin.co.uk/json/deliverySend.php";
+    }
 }

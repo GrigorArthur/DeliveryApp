@@ -24,8 +24,6 @@ public class DownloadDespatchProxy extends BaseProxy {
 
         String contentString = postPlain(URLManager.getDownloadDespatchURL(), formBody);
 
-        System.out.println(contentString);
-
         DownloadDespatchResponseVo responseVo = new DownloadDespatchResponseVo();
 
         try {

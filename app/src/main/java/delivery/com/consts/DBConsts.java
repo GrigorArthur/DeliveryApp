@@ -31,5 +31,8 @@ public class DBConsts {
     public static final String FIELD_TIER = "tier";
     public static final String FIELD_SLOT = "slot";
     public static final String FIELD_QTY = "qty";
+    public static final String FIELD_STATUS = "status";
+    public static final String FIELD_REMOVE = "remove";
+    public static final String FIELD_REMOVE_ID = "remove_id";
 
 }

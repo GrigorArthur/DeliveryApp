@@ -1,5 +1,6 @@
 package delivery.com.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import delivery.com.fragment.DespatchFragment;
 import delivery.com.model.DespatchItem;
 import delivery.com.model.OutletItem;
 import delivery.com.ui.OutletActivity;
+import delivery.com.ui.ReasonActivity;
+import delivery.com.ui.StockActivity;
 
 public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
 
@@ -46,8 +49,30 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
 
         holder.tvAddress.setSelected(true);
 
-        holder.setIcon(item.getCompleted());
-        holder.setTVColor(item.getCompleted());
+        holder.setIcon(item.getDelivered());
+        holder.setTVColor(item.getDelivered());
+
+        holder.btnViewCrate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(parent, StockActivity.class);
+
+                intent.putExtra("outlet", item);
+
+                parent.startActivity(intent);
+            }
+        });
+
+        holder.btnCannotDeliver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(parent, ReasonActivity.class);
+
+                intent.putExtra("outlet", item);
+
+                parent.startActivity(intent);
+            }
+        });
     }
 
     public OutletItem getItem(int pos) {
@@ -84,6 +109,10 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
         TextView tvAddress;
         @Bind(R.id.iv_mark)
         ImageView ivMark;
+        @Bind(R.id.btn_view_crate)
+        TextView btnViewCrate;
+        @Bind(R.id.btn_cannot_deliver)
+        TextView btnCannotDeliver;
 
         public OutletViewHolder(View view) {
             super(view);
@@ -92,7 +121,7 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
         }
 
         public void setTVColor(int completed) {
-            if(completed == StateConsts.OUTLET_COMPLETED || completed == StateConsts.OUTLET_REMOVED) {
+            if(completed == StateConsts.OUTLET_DELIVERED || completed == StateConsts.OUTLET_CANNOT_DELIVER) {
                 tvOutletID.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvService.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvAddress.setTextColor(parent.getResources().getColor(R.color.colorWhite));
@@ -104,15 +133,15 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
         }
 
         public void setIcon(int completed) {
-            if(completed == StateConsts.OUTLET_COMPLETED) {
+            if(completed == StateConsts.OUTLET_DELIVERED) {
                 outletLayout.setBackgroundDrawable(parent.getResources().getDrawable(R.drawable.outlet_bg_complete));
                 ivMark.setBackground(parent.getResources().getDrawable(R.drawable.ic_complete));
                 ivMark.setVisibility(View.VISIBLE);
-            } else if (completed == StateConsts.OUTLET_REMOVED){
+            } else if (completed == StateConsts.OUTLET_CANNOT_DELIVER){
                 outletLayout.setBackgroundDrawable(parent.getResources().getDrawable(R.drawable.outlet_bg_remove));
                 ivMark.setBackground(parent.getResources().getDrawable(R.drawable.ic_outlet_delete));
                 ivMark.setVisibility(View.VISIBLE);
-            } else if (completed == StateConsts.OUTLET_DEFAULT) {
+            } else if (completed == StateConsts.OUTLET_NOT_DELIVERED) {
                 outletLayout.setBackgroundDrawable(parent.getResources().getDrawable(R.drawable.outlet_bg_default));
                 ivMark.setVisibility(View.GONE);
             }

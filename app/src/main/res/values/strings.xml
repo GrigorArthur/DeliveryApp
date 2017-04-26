@@ -13,6 +13,30 @@
     <string name="view_crate">VIEW CRATE</string>
     <string name="cannot_deliver">CANNOT DELIVER</string>
 
+    <string name="msg_ask_remove_despatch">Are you sure you want to remove this despatch?</string>
+
+    <string name="btn_full">FULL</string>
+    <string name="btn_restock">RESTOCK</string>
+    <string name="btn_none">NONE</string>
+    <string name="btn_missing">MISSING</string>
+    <string name="btn_save">SAVE</string>
+    <string name="btn_complete">COMPLETE</string>
+
+    <array name="outlet_reason">
+        <item>Closed</item>
+        <item>No Access Closed</item>
+        <item>Out of Hours Closed</item>
+        <item>Refurbishment Closed</item>
+        <item>Site has Closed Down</item>
+        <item>Display not Accessible on This Site</item>
+        <item>Display missing</item>
+        <item>Display broken</item>
+        <item>Display temporarily Put Away</item>
+        <item>Could Not Locate Site</item>
+        <item>Not Enough Time to Complete</item>
+        <item>Delivered</item>
+    </array>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

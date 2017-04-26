@@ -8,4 +8,6 @@
     <color name="colorGray">#dddddd</color>
     <color name="colorRemove">#d90000</color>
     <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorLightBlue">#00a3d9</color>
+    <color name="colorDarkYellow">#ffd24d</color>
 </resources>

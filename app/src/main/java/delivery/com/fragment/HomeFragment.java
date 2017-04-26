@@ -26,10 +26,12 @@ import delivery.com.R;
 import delivery.com.consts.StateConsts;
 import delivery.com.db.DespatchDB;
 import delivery.com.db.OutletDB;
+import delivery.com.db.StockDB;
 import delivery.com.event.DownloadDespatchEvent;
 import delivery.com.event.RemoveAllDataEvent;
 import delivery.com.model.DespatchItem;
 import delivery.com.model.OutletItem;
+import delivery.com.model.StockItem;
 import delivery.com.task.DownloadDespatchTask;
 import delivery.com.task.RemoveAllDataTask;
 import delivery.com.ui.MainActivity;
@@ -79,10 +81,11 @@ public class HomeFragment extends Fragment {
 
     @Subscribe
     public void onDownloadDespatchEvent(DownloadDespatchEvent event) {
-        hideProgressDialog();
         DownloadDespatchResponseVo responseVo = event.getResponse();
         if (responseVo != null) {
             parseDespatches(responseVo.despatch);
+        } else {
+            hideProgressDialog();
         }
     }
 
@@ -127,6 +130,7 @@ public class HomeFragment extends Fragment {
             JSONArray jsonDespatchArray = new JSONArray(despatches);
             DespatchDB despatchDB = new DespatchDB(getActivity());
             OutletDB outletDB = new OutletDB(getActivity());
+            StockDB stockDB = new StockDB(getActivity());
             for(int i = 0; i < jsonDespatchArray.length(); i++) {
                 JSONObject jsonDespatchItem = jsonDespatchArray.getJSONObject(i);
                 DespatchItem despatchItem = new DespatchItem();
@@ -147,18 +151,41 @@ public class HomeFragment extends Fragment {
                         JSONObject jsonOutletItem = jsonOutletArray.getJSONObject(j);
 
                         OutletItem outletItem = new OutletItem();
+                        String outletID = jsonOutletItem.getString("outletID");
                         outletItem.setDespatchId(despatchID);
-                        outletItem.setOutletId(jsonOutletItem.getString("outletID"));
+                        outletItem.setOutletId(outletID);
                         outletItem.setOutlet(jsonOutletItem.getString("outlet"));
                         outletItem.setAddress(jsonOutletItem.getString("address"));
                         outletItem.setServiceType(jsonOutletItem.getString("service"));
-                        outletItem.setDelivered(jsonOutletItem.getString("delivered"));
+                        outletItem.setDelivered(jsonOutletItem.getInt("delivered"));
                         outletItem.setDeliveredTime(jsonOutletItem.getString("deliveredtime"));
-                        outletItem.setReason(0);
-                        outletItem.setCompleted(StateConsts.OUTLET_REMOVED);
+                        outletItem.setTiers(jsonOutletItem.getInt("tiers"));
+                        outletItem.setReason(jsonOutletItem.getInt("reason"));
 
                         outletDB.addOutlet(outletItem);
                         String stock = jsonOutletItem.getString("stock");
+                        JSONArray jsonStockArray = new JSONArray(stock);
+                        for(int k = 0; k < jsonStockArray.length(); k++) {
+                            JSONObject jsonStockItem = jsonStockArray.getJSONObject(k);
+                            StockItem stockItem = new StockItem();
+
+                            stockItem.setDespatchID(despatchID);
+                            stockItem.setOutletID(outletID);
+                            stockItem.setStock(jsonStockItem.getString("stock"));
+                            stockItem.setStockId(jsonStockItem.getString("stockID"));
+                            stockItem.setStatus(jsonStockItem.getString("status"));
+                            stockItem.setTier(jsonStockItem.getInt("tier"));
+                            String slot = jsonStockItem.getString("slot");
+                            if(!slot.isEmpty())
+                                stockItem.setSlot(Integer.valueOf(jsonStockItem.getString("slot")));
+                            else
+                                stockItem.setSlot(0);
+                            stockItem.setQty(StateConsts.STOCK_QTY_NONE);
+                            stockItem.setRemove(jsonStockItem.getString("remove"));
+                            stockItem.setRemoveID(jsonStockItem.getString("removeID"));
+
+                            stockDB.addStock(stockItem);
+                        }
                     }
                 }
             }

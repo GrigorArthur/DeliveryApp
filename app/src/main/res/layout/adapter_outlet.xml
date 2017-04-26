@@ -75,6 +75,7 @@
             android:text="@string/view_crate"
             android:gravity="center"
             android:textStyle="bold"
+            android:padding="@dimen/activity_vertical_margin"
             style="@style/TextDefault"/>
 
         <View
@@ -90,6 +91,7 @@
             android:text="@string/cannot_deliver"
             android:gravity="center"
             android:textStyle="bold"
+            android:padding="@dimen/activity_vertical_margin"
             style="@style/TextDefault"/>
     </LinearLayout>
 

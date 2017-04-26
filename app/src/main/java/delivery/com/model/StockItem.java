@@ -7,18 +7,44 @@ import java.io.Serializable;
  */
 
 public class StockItem implements Serializable {
+    private String despatchID;
+    private String outletID;
     private String stockId;
     private String stock;
     private int tier;
     private int slot;
     private int qty;
+    private String status;
+    private String remove;
+    private String removeID;
 
     public StockItem() {
+        despatchID = "";
+        outletID = "";
         stockId = "";
         stock = "";
         tier = 0;
         slot = 0;
         qty = 0;
+        status = "";
+        remove = "";
+        removeID = "";
+    }
+
+    public void setDespatchID(String value) {
+        this.despatchID = value;
+    }
+
+    public String getDespatchID() {
+        return despatchID;
+    }
+
+    public void setOutletID(String value) {
+        this.outletID = value;
+    }
+
+    public String getOutletID() {
+        return outletID;
     }
 
     public void setStockId(String value) {
@@ -59,5 +85,29 @@ public class StockItem implements Serializable {
 
     public int getQty() {
         return qty;
+    }
+
+    public void setStatus(String value) {
+        this.status = value;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setRemove(String value) {
+        this.remove = value;
+    }
+
+    public String getRemove() {
+        return remove;
+    }
+
+    public void setRemoveID(String value) {
+        this.removeID = value;
+    }
+
+    public String getRemoveID() {
+        return removeID;
     }
 }

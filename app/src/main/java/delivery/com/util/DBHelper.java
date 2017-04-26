@@ -27,14 +27,13 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBConsts.FIELD_OUTLET + " TEXT," +
                     DBConsts.FIELD_ADDRESS + " TEXT," +
                     DBConsts.FIELD_SERVICE + " TEXT," +
-                    DBConsts.FIELD_DELIVERED + " TEXT," +
+                    DBConsts.FIELD_DELIVERED + " INTEGER," +
                     DBConsts.FIELD_DELIVER_TIME + " TEXT," +
                     DBConsts.FIELD_TIERS + " INTEGER," +
-                    DBConsts.FIELD_REASON + " INTEGER," +
-                    DBConsts.FIELD_COMPLETED + " INTEGER);";
+                    DBConsts.FIELD_REASON + " INTEGER);";
 
     protected static String STOCK_TABLE_CREATE_SQL =
-            "CREATE TABLE IF NOT EXISTS " + DBConsts.TABLE_NAME_OUTLET + " (" +
+            "CREATE TABLE IF NOT EXISTS " + DBConsts.TABLE_NAME_STOCK + " (" +
                     DBConsts.FIELD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     DBConsts.FIELD_DESPATCH_ID + " TEXT," +
                     DBConsts.FIELD_OUTLET_ID + " TEXT," +
@@ -42,7 +41,10 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBConsts.FIELD_STOCK + " TEXT," +
                     DBConsts.FIELD_TIER + " INTEGER," +
                     DBConsts.FIELD_SLOT + " INTEGER," +
-                    DBConsts.FIELD_REASON + " TEXT);";
+                    DBConsts.FIELD_QTY + " INTEGER," +
+                    DBConsts.FIELD_STATUS + " TEXT," +
+                    DBConsts.FIELD_REMOVE + " TEXT," +
+                    DBConsts.FIELD_REMOVE_ID + " TEXT);";
 
     public DBHelper(Context context) {
         super(context, DB_NAME_PREFIX, null, DB_VERSION);

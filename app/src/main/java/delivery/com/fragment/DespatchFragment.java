@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 import delivery.com.R;
 import delivery.com.adapter.DespatchAdapter;
 import delivery.com.db.DespatchDB;
+import delivery.com.db.OutletDB;
+import delivery.com.db.StockDB;
 import delivery.com.model.DespatchItem;
 import delivery.com.ui.DividerItemDecoration;
 import delivery.com.ui.OutletActivity;
@@ -58,14 +60,14 @@ public class DespatchFragment extends Fragment {
         adapter = new DespatchAdapter(DespatchFragment.this);
         despatchList.setAdapter(adapter);
 
-        getDespatches();
-
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        getDespatches();
 
         NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(1).setChecked(true);
@@ -80,8 +82,14 @@ public class DespatchFragment extends Fragment {
     }
 
     public void removeDespatch(DespatchItem item) {
-        DespatchDB db = new DespatchDB(getActivity());
-        db.removeDespatch(item);
+        StockDB stockDB = new StockDB(getActivity());
+        stockDB.removeDatasByDespatchID(item.getDespatchId());
+
+        OutletDB outletDB = new OutletDB(getActivity());
+        outletDB.removeDatasByDespatchID(item.getDespatchId());
+
+        DespatchDB despatchDB = new DespatchDB(getActivity());
+        despatchDB.removeDespatch(item);
 
         getDespatches();
     }
