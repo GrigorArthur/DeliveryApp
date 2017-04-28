@@ -1,7 +1,9 @@
 package delivery.com.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -27,15 +29,22 @@ import delivery.com.consts.StateConsts;
 import delivery.com.db.DespatchDB;
 import delivery.com.db.OutletDB;
 import delivery.com.db.StockDB;
+import delivery.com.event.DespatchStoreEvent;
 import delivery.com.event.DownloadDespatchEvent;
+import delivery.com.event.MakeUploadDataEvent;
 import delivery.com.event.RemoveAllDataEvent;
+import delivery.com.event.UploadDespatchEvent;
 import delivery.com.model.DespatchItem;
 import delivery.com.model.OutletItem;
 import delivery.com.model.StockItem;
+import delivery.com.task.DespatchStoreTask;
 import delivery.com.task.DownloadDespatchTask;
+import delivery.com.task.MakeUploadDataTask;
 import delivery.com.task.RemoveAllDataTask;
+import delivery.com.task.UploadDespatchTask;
 import delivery.com.ui.MainActivity;
 import delivery.com.vo.DownloadDespatchResponseVo;
+import delivery.com.vo.UploadDespatchResponseVo;
 
 public class HomeFragment extends Fragment {
 
@@ -58,6 +67,7 @@ public class HomeFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
 
         return view;
     }
@@ -81,11 +91,36 @@ public class HomeFragment extends Fragment {
 
     @Subscribe
     public void onDownloadDespatchEvent(DownloadDespatchEvent event) {
+        hideProgressDialog();
         DownloadDespatchResponseVo responseVo = event.getResponse();
         if (responseVo != null) {
             parseDespatches(responseVo.despatch);
         } else {
-            hideProgressDialog();
+            networkError();
+        }
+    }
+
+    @Subscribe
+    public void onUploadDespatchEvent(UploadDespatchEvent event) {
+        hideProgressDialog();
+        UploadDespatchResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            uploadSuccess();
+        } else {
+            networkError();
+        }
+    }
+
+    @Subscribe
+    public void onDespatchStoreEvent(DespatchStoreEvent event) {
+        hideProgressDialog();
+        int result = event.getResponse();
+        if(result == 1) {
+            ((MainActivity) getActivity()).showDespatchFragment();
+        } else if (result == 2) {
+            noDespatch();
+        } else if (result == 0){
+            dbError();
         }
     }
 
@@ -100,19 +135,53 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Subscribe
+    public void onMakeUploadDataEvent(MakeUploadDataEvent event) {
+        hideProgressDialog();
+        String result = event.getResponse();
+        if(result == null || result.isEmpty()) {
+            noCompletedDespatch();
+        } else {
+            startUploadDespatch(result);
+        }
+    }
+
     @OnClick(R.id.btn_download_dispatch)
-    void onClickBtnDownDispatch() {
+    void onClickBtnDownDespatch() {
         progressDialog.setMessage(getResources().getString(R.string.downloading));
         progressDialog.show();
         startDownloadDespatch();
     }
 
+    @OnClick(R.id.btn_upload_dispatches)
+    void onClickBtnUploadDespatch() {
+        progressDialog.setMessage(getResources().getString(R.string.processing));
+        progressDialog.show();
+
+        MakeUploadDataTask task = new MakeUploadDataTask(getActivity());
+        task.execute();
+    }
+
     @OnClick(R.id.btn_remove_datas)
     void onClickBtnRemoveData() {
-        progressDialog.setMessage(getResources().getString(R.string.removing));
-        progressDialog.show();
-        RemoveAllDataTask task = new RemoveAllDataTask(getActivity());
-        task.execute();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage(getString(R.string.msg_ask_remove_datas));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog.setMessage(getResources().getString(R.string.removing));
+                progressDialog.show();
+                RemoveAllDataTask task = new RemoveAllDataTask(getActivity());
+                task.execute();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
     }
 
     private void startDownloadDespatch() {
@@ -120,81 +189,44 @@ public class HomeFragment extends Fragment {
         task.execute();
     }
 
+    private void startUploadDespatch(String data) {
+        progressDialog.setMessage(getResources().getString(R.string.uploading));
+        progressDialog.show();
+
+        UploadDespatchTask task = new UploadDespatchTask();
+        task.execute(data);
+    }
+
     private void hideProgressDialog() {
         if(progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
+    private void uploadSuccess() {
+        Toast.makeText(getActivity(), R.string.upload_success, Toast.LENGTH_SHORT).show();
+    }
+
+    private void networkError() {
+        Toast.makeText(getActivity(), R.string.network_error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void noCompletedDespatch() {
+        Toast.makeText(getActivity(), R.string.no_completed_despatch, Toast.LENGTH_SHORT).show();
+    }
+
+    private void dbError() {
+        Toast.makeText(getActivity(), R.string.db_error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void noDespatch() {
+        Toast.makeText(getActivity(), R.string.no_despatch, Toast.LENGTH_SHORT).show();
+    }
+
     private void parseDespatches(String despatches) {
-        try {
-            JSONArray jsonDespatchArray = new JSONArray(despatches);
-            DespatchDB despatchDB = new DespatchDB(getActivity());
-            OutletDB outletDB = new OutletDB(getActivity());
-            StockDB stockDB = new StockDB(getActivity());
-            for(int i = 0; i < jsonDespatchArray.length(); i++) {
-                JSONObject jsonDespatchItem = jsonDespatchArray.getJSONObject(i);
-                DespatchItem despatchItem = new DespatchItem();
-
-                String despatchID = jsonDespatchItem.getString("despatchID");
-
-                despatchItem.setDespatchId(despatchID);
-                despatchItem.setRunId(jsonDespatchItem.getString("run"));
-                despatchItem.setDriverName(jsonDespatchItem.getString("driver"));
-                despatchItem.setCreationDate(jsonDespatchItem.getString("date"));
-                despatchItem.setCompleted(StateConsts.DESPATCH_DEFAULT);
-
-                if(!despatchDB.isExist(despatchItem)) {
-                    despatchDB.addDespatch(despatchItem);
-                    String despatchOutlet = jsonDespatchItem.getString("outlet");
-                    JSONArray jsonOutletArray = new JSONArray(despatchOutlet);
-                    for(int j = 0; j < jsonOutletArray.length(); j++) {
-                        JSONObject jsonOutletItem = jsonOutletArray.getJSONObject(j);
-
-                        OutletItem outletItem = new OutletItem();
-                        String outletID = jsonOutletItem.getString("outletID");
-                        outletItem.setDespatchId(despatchID);
-                        outletItem.setOutletId(outletID);
-                        outletItem.setOutlet(jsonOutletItem.getString("outlet"));
-                        outletItem.setAddress(jsonOutletItem.getString("address"));
-                        outletItem.setServiceType(jsonOutletItem.getString("service"));
-                        outletItem.setDelivered(jsonOutletItem.getInt("delivered"));
-                        outletItem.setDeliveredTime(jsonOutletItem.getString("deliveredtime"));
-                        outletItem.setTiers(jsonOutletItem.getInt("tiers"));
-                        outletItem.setReason(jsonOutletItem.getInt("reason"));
-
-                        outletDB.addOutlet(outletItem);
-                        String stock = jsonOutletItem.getString("stock");
-                        JSONArray jsonStockArray = new JSONArray(stock);
-                        for(int k = 0; k < jsonStockArray.length(); k++) {
-                            JSONObject jsonStockItem = jsonStockArray.getJSONObject(k);
-                            StockItem stockItem = new StockItem();
-
-                            stockItem.setDespatchID(despatchID);
-                            stockItem.setOutletID(outletID);
-                            stockItem.setStock(jsonStockItem.getString("stock"));
-                            stockItem.setStockId(jsonStockItem.getString("stockID"));
-                            stockItem.setStatus(jsonStockItem.getString("status"));
-                            stockItem.setTier(jsonStockItem.getInt("tier"));
-                            String slot = jsonStockItem.getString("slot");
-                            if(!slot.isEmpty())
-                                stockItem.setSlot(Integer.valueOf(jsonStockItem.getString("slot")));
-                            else
-                                stockItem.setSlot(0);
-                            stockItem.setQty(StateConsts.STOCK_QTY_NONE);
-                            stockItem.setRemove(jsonStockItem.getString("remove"));
-                            stockItem.setRemoveID(jsonStockItem.getString("removeID"));
-
-                            stockDB.addStock(stockItem);
-                        }
-                    }
-                }
-            }
-            hideProgressDialog();
-
-            ((MainActivity) getActivity()).showDespatchFragment();
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
+        progressDialog.setMessage(getResources().getString(R.string.processing));
+        progressDialog.show();
+        DespatchStoreTask task = new DespatchStoreTask(getActivity());
+        task.execute(despatches);
     }
 
 }

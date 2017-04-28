@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 
 import delivery.com.consts.DBConsts;
+import delivery.com.consts.StateConsts;
 import delivery.com.model.DespatchItem;
 import delivery.com.util.DBHelper;
 
@@ -24,6 +25,24 @@ public class DespatchDB extends DBHelper {
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getReadableDatabase();
                 Cursor cursor = db.query(DBConsts.TABLE_NAME_DESPATCH, null, null, null, null, null, null);
+                ret = createDespatchBeans(cursor);
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+
+        return ret;
+    }
+
+    public ArrayList<DespatchItem> fetchCompletedDespatches() {
+        ArrayList<DespatchItem> ret = null;
+        try {
+            String szWhere = DBConsts.FIELD_COMPLETED + " = " + StateConsts.DESPATCH_COMPLETED;
+
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                Cursor cursor = db.query(DBConsts.TABLE_NAME_DESPATCH, null, szWhere, null, null, null, null);
                 ret = createDespatchBeans(cursor);
                 db.close();
             }

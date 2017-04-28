@@ -52,6 +52,8 @@ public class DespatchAdapter extends RecyclerView.Adapter<DespatchAdapter.Despat
                     parent.removeDespatch(item);
                 }
             });
+        } else if(item.getCompleted() == StateConsts.DESPATCH_COMPLETED) {
+            holder.ivMark.setOnClickListener(null);
         }
 
         holder.despatchLayout.setOnClickListener(new View.OnClickListener() {
@@ -89,10 +91,16 @@ public class DespatchAdapter extends RecyclerView.Adapter<DespatchAdapter.Despat
 
         @Bind(R.id.despatch_layout)
         LinearLayout despatchLayout;
+        @Bind(R.id.title_despatch)
+        TextView tvTitleDespatch;
         @Bind(R.id.tv_despatch_id)
         TextView tvDespatchId;
+        @Bind(R.id.title_run)
+        TextView tvTitleRun;
         @Bind(R.id.tv_run)
         TextView tvRun;
+        @Bind(R.id.title_driver)
+        TextView tvTitleDriver;
         @Bind(R.id.tv_driver_name)
         TextView tvDriverName;
         @Bind(R.id.iv_mark)
@@ -109,10 +117,16 @@ public class DespatchAdapter extends RecyclerView.Adapter<DespatchAdapter.Despat
                 tvDespatchId.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvRun.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvDriverName.setTextColor(parent.getResources().getColor(R.color.colorWhite));
+                tvTitleDespatch.setTextColor(parent.getResources().getColor(R.color.colorWhite));
+                tvTitleRun.setTextColor(parent.getResources().getColor(R.color.colorWhite));
+                tvTitleDriver.setTextColor(parent.getResources().getColor(R.color.colorWhite));
             } else {
                 tvDespatchId.setTextColor(parent.getResources().getColor(R.color.colorBlack));
                 tvRun.setTextColor(parent.getResources().getColor(R.color.colorBlack));
                 tvDriverName.setTextColor(parent.getResources().getColor(R.color.colorBlack));
+                tvTitleDespatch.setTextColor(parent.getResources().getColor(R.color.colorBlack));
+                tvTitleRun.setTextColor(parent.getResources().getColor(R.color.colorBlack));
+                tvTitleDriver.setTextColor(parent.getResources().getColor(R.color.colorBlack));
             }
         }
 
@@ -121,13 +135,8 @@ public class DespatchAdapter extends RecyclerView.Adapter<DespatchAdapter.Despat
                 despatchLayout.setBackgroundDrawable(parent.getResources().getDrawable(R.drawable.despatch_bg_complete));
                 ivMark.setBackground(parent.getResources().getDrawable(R.drawable.ic_complete));
             } else {
+                despatchLayout.setBackgroundDrawable(parent.getResources().getDrawable(R.drawable.despatch_bg_default));
                 ivMark.setBackground(parent.getResources().getDrawable(R.drawable.ic_delete));
-                ivMark.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
             }
         }
     }

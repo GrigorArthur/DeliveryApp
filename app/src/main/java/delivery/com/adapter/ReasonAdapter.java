@@ -54,6 +54,13 @@ public class ReasonAdapter extends RecyclerView.Adapter<ReasonAdapter.ReasonView
                 notifyItemRangeChanged(0, items.length);
             }
         });
+        holder.reasonLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lastCheckedPosition = holder.getAdapterPosition();
+                notifyItemRangeChanged(0, items.length);
+            }
+        });
 
     }
 
@@ -69,6 +76,8 @@ public class ReasonAdapter extends RecyclerView.Adapter<ReasonAdapter.ReasonView
     public class ReasonViewHolder extends RecyclerView.ViewHolder {
         public final View view;
 
+        @Bind(R.id.reason_layout)
+        LinearLayout reasonLayout;
         @Bind(R.id.btn_radio)
         RadioButton btnRadio;
         @Bind(R.id.tv_reason)

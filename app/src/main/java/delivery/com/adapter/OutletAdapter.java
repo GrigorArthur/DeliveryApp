@@ -43,9 +43,13 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
     public void onBindViewHolder(final OutletViewHolder holder, int position) {
         final OutletItem item = items.get(position);
 
-        holder.tvOutletID.setText(item.getOutletId());
+        holder.tvOutlet.setText(item.getOutlet());
+        holder.tvOutletID.setText("[" + item.getOutletId() + "]");
         holder.tvService.setText(item.getServiceType());
         holder.tvAddress.setText(item.getAddress());
+
+        holder.tvOutlet.setSelected(true);
+        holder.tvOutletID.setSelected(true);
 
         holder.tvAddress.setSelected(true);
 
@@ -101,6 +105,8 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
 
         @Bind(R.id.outlet_layout)
         LinearLayout outletLayout;
+        @Bind(R.id.tv_outlet)
+        TextView tvOutlet;
         @Bind(R.id.tv_outlet_id)
         TextView tvOutletID;
         @Bind(R.id.tv_service)
@@ -122,10 +128,12 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
 
         public void setTVColor(int completed) {
             if(completed == StateConsts.OUTLET_DELIVERED || completed == StateConsts.OUTLET_CANNOT_DELIVER) {
+                tvOutlet.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvOutletID.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvService.setTextColor(parent.getResources().getColor(R.color.colorWhite));
                 tvAddress.setTextColor(parent.getResources().getColor(R.color.colorWhite));
             } else {
+                tvOutlet.setTextColor(parent.getResources().getColor(R.color.colorBlack));
                 tvOutletID.setTextColor(parent.getResources().getColor(R.color.colorBlack));
                 tvService.setTextColor(parent.getResources().getColor(R.color.colorBlack));
                 tvAddress.setTextColor(parent.getResources().getColor(R.color.colorBlack));

@@ -17,6 +17,8 @@ public class StockItem implements Serializable {
     private String status;
     private String remove;
     private String removeID;
+    private String titleID;
+    private String size;
 
     public StockItem() {
         despatchID = "";
@@ -29,6 +31,8 @@ public class StockItem implements Serializable {
         status = "";
         remove = "";
         removeID = "";
+        titleID = "";
+        size = "";
     }
 
     public void setDespatchID(String value) {
@@ -109,5 +113,21 @@ public class StockItem implements Serializable {
 
     public String getRemoveID() {
         return removeID;
+    }
+
+    public void setTitleID(String value) {
+        this.titleID = value;
+    }
+
+    public String getTitleID() {
+        return titleID;
+    }
+
+    public void setSize(String value) {
+        this.size = value;
+    }
+
+    public String getSize() {
+        return size;
     }
 }

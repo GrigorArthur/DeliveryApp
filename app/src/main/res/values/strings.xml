@@ -1,19 +1,35 @@
 <resources>
     <string name="app_name">Glide Media Delivery</string>
-    <string name="download_dispatch">Download Dispatch\nInformation</string>
-    <string name="upload_dispatch">Upload Dispatch\nInformation</string>
+    <string name="download_dispatch">Download Despatch\nInformation</string>
+    <string name="upload_dispatch">Upload Completed\nDespatch(s)</string>
+    <string name="no_despatch">No despatches downloaded</string>
     <string name="remove_dispatch">Remove All Data</string>
     <string name="home">Home</string>
     <string name="despatch">Despatch</string>
     <string name="downloading">Downloading Despatches...</string>
     <string name="uploading">Uploading Despatches...</string>
     <string name="removing">Removing Despatches...</string>
+    <string name="upload_success">Despatches Successfully Uploaded.</string>
     <string name="remove_success">Despatches Successfully Removed.</string>
     <string name="remove_failed">Remove Failed.</string>
     <string name="view_crate">VIEW CRATE</string>
     <string name="cannot_deliver">CANNOT DELIVER</string>
+    <string name="network_error">Network Error</string>
+    <string name="processing">Processing...</string>
+    <string name="db_error">Database Error</string>
+    <string name="remove_stock">Remove Stock</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="no_completed_despatch">No Completed Despatch</string>
+
+    <string name="clone_despatch">DESPATCH:</string>
+    <string name="clone_run">RUN:</string>
+    <string name="clone_driver">DRIVER:</string>
+
+    <string name="title_despatch_fragment">Despatches Ready for Delivery</string>
 
     <string name="msg_ask_remove_despatch">Are you sure you want to remove this despatch?</string>
+    <string name="msg_ask_remove_datas">Are you sure you want to remove all datas?</string>
 
     <string name="btn_full">FULL</string>
     <string name="btn_restock">RESTOCK</string>
@@ -21,6 +37,7 @@
     <string name="btn_missing">MISSING</string>
     <string name="btn_save">SAVE</string>
     <string name="btn_complete">COMPLETE</string>
+    <string name="btn_reset">RESET</string>
 
     <array name="outlet_reason">
         <item>Closed</item>

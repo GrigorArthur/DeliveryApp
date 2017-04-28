@@ -73,9 +73,11 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.nav_home:
                 fragment = HomeFragment.newInstance();
+                getSupportActionBar().setTitle(R.string.app_name);
                 break;
             case R.id.nav_despatch:
                 fragment = DespatchFragment.newInstance();
+                getSupportActionBar().setTitle(R.string.title_despatch_fragment);
                 break;
             default:
                 break;

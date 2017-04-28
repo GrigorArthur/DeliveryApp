@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import org.greenrobot.eventbus.EventBus;
 
 import delivery.com.db.DespatchDB;
+import delivery.com.db.OutletDB;
+import delivery.com.db.StockDB;
 import delivery.com.event.DownloadDespatchEvent;
 import delivery.com.event.RemoveAllDataEvent;
 import delivery.com.proxy.DownloadDespatchProxy;
@@ -27,8 +29,12 @@ public class RemoveAllDataTask extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... params) {
         try {
-            DespatchDB db = new DespatchDB(context);
-            db.removeAllDatas();
+            StockDB stockDB = new StockDB(context);
+            stockDB.removeAllDatas();
+            OutletDB outletDB = new OutletDB(context);
+            outletDB.removeAllDatas();
+            DespatchDB despatchDB = new DespatchDB(context);
+            despatchDB.removeAllDatas();
 
             return true;
         } catch (Exception e) {

@@ -45,13 +45,16 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
 
         holder.tvSlot.setText(String.valueOf(item.getSlot()));
         holder.tvStock.setText(item.getStock());
-        holder.tvStockID.setText(item.getStockId());
+        holder.tvTitleID.setText("[" + item.getTitleID() + "]");
+        holder.tvSize.setText("[" + item.getSize() + "]");
+        holder.tvStock.setSelected(true);
         holder.tvStockStatus.setText(item.getStatus());
 
         if(!item.getRemove().isEmpty()) {
             holder.removeLayout.setVisibility(View.VISIBLE);
             holder.tvRemove.setText(item.getRemove());
-            holder.tvRemoveID.setText(item.getRemoveID());
+            holder.tvRemoveID.setText("[" + item.getRemoveID() + "]");
+            holder.tvRemove.setSelected(true);
         } else {
             holder.removeLayout.setVisibility(View.GONE);
         }
@@ -153,8 +156,10 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
         TextView tvSlot;
         @Bind(R.id.tv_stock)
         TextView tvStock;
-        @Bind(R.id.tv_stock_id)
-        TextView tvStockID;
+        @Bind(R.id.tv_title_id)
+        TextView tvTitleID;
+        @Bind(R.id.tv_size)
+        TextView tvSize;
         @Bind(R.id.tv_stock_status)
         TextView tvStockStatus;
         @Bind(R.id.tv_remove)

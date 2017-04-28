@@ -36,6 +36,24 @@ public class StockDB extends DBHelper {
         return ret;
     }
 
+    public ArrayList<StockItem> fetchAllStocksByOutletID(String outletID) {
+        ArrayList<StockItem> ret = null;
+        try {
+            String szWhere = DBConsts.FIELD_OUTLET_ID + " = '" + outletID + "'";
+            String szOrderBy = DBConsts.FIELD_TIER + " ASC";
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                Cursor cursor = db.query(DBConsts.TABLE_NAME_STOCK, null, szWhere, null, null, null, szOrderBy);
+                ret = createOutletBeans(cursor);
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+
+        return ret;
+    }
+
     public long addStock(StockItem bean) {
         long ret = -1;
         try {
@@ -50,6 +68,8 @@ public class StockDB extends DBHelper {
             value.put(DBConsts.FIELD_STATUS, bean.getStatus());
             value.put(DBConsts.FIELD_REMOVE, bean.getRemove());
             value.put(DBConsts.FIELD_REMOVE_ID, bean.getRemoveID());
+            value.put(DBConsts.FIELD_TITLE_ID, bean.getTitleID());
+            value.put(DBConsts.FIELD_SIZE, bean.getSize());
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getWritableDatabase();
                 ret = db.insert(DBConsts.TABLE_NAME_STOCK, null, value);
@@ -64,7 +84,7 @@ public class StockDB extends DBHelper {
 
     public void updateStock(StockItem item) {
         try {
-            String szWhere = DBConsts.FIELD_STOCK_ID + " = '" + item.getStockId() + "'";
+            String szWhere = DBConsts.FIELD_OUTLET_ID + " = '" + item.getOutletID() + "' AND " + DBConsts.FIELD_STOCK_ID + " = '" + item.getStockId() + "'";
             ContentValues value = new ContentValues();
             value.put(DBConsts.FIELD_QTY, item.getQty());
 
@@ -92,6 +112,18 @@ public class StockDB extends DBHelper {
         }
     }
 
+    public void removeAllDatas() {
+        try {
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                db.delete(DBConsts.TABLE_NAME_STOCK, null, null);
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private ArrayList<StockItem> createOutletBeans(Cursor c) {
         ArrayList<StockItem> ret = null;
         try {
@@ -106,6 +138,8 @@ public class StockDB extends DBHelper {
                     COL_SLOT     		    = c.getColumnIndexOrThrow(DBConsts.FIELD_SLOT),
                     COL_QTY     	 	    = c.getColumnIndexOrThrow(DBConsts.FIELD_QTY),
                     COL_STATUS    	 	    = c.getColumnIndexOrThrow(DBConsts.FIELD_STATUS),
+                    COL_TITLE_ID   	 	    = c.getColumnIndexOrThrow(DBConsts.FIELD_TITLE_ID),
+                    COL_SIZE    	 	    = c.getColumnIndexOrThrow(DBConsts.FIELD_SIZE),
                     COL_REMOVE     		    = c.getColumnIndexOrThrow(DBConsts.FIELD_REMOVE),
                     COL_REMOVE_ID     	 	= c.getColumnIndexOrThrow(DBConsts.FIELD_REMOVE_ID);
 
@@ -119,6 +153,8 @@ public class StockDB extends DBHelper {
                 bean.setSlot(c.getInt(COL_SLOT));
                 bean.setQty(c.getInt(COL_QTY));
                 bean.setStatus(c.getString(COL_STATUS));
+                bean.setTitleID(c.getString(COL_TITLE_ID));
+                bean.setSize(c.getString(COL_SIZE));
                 bean.setRemove(c.getString(COL_REMOVE));
                 bean.setRemoveID(c.getString(COL_REMOVE_ID));
                 ret.add(bean);

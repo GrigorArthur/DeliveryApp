@@ -15,7 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -31,17 +34,22 @@ import delivery.com.fragment.HomeFragment;
 import delivery.com.fragment.StockFragment;
 import delivery.com.model.OutletItem;
 import delivery.com.model.StockItem;
+import delivery.com.util.DateUtil;
 
 public class StockActivity extends AppCompatActivity
 {
     @Bind(R.id.view_pager)
     ViewPager viewPager;
+    @Bind(R.id.tv_outlet)
+    TextView tvOutlet;
     @Bind(R.id.tv_outlet_id)
     TextView tvOutletID;
     @Bind(R.id.tv_service)
     TextView tvService;
     @Bind(R.id.tv_address)
     TextView tvAddress;
+    @Bind(R.id.btn_complete)
+    Button btnComplete;
 
     private OutletItem outletItem;
     private int tiers = 0;
@@ -58,9 +66,18 @@ public class StockActivity extends AppCompatActivity
 
         outletItem = (OutletItem) getIntent().getSerializableExtra("outlet");
         tiers = outletItem.getTiers();
-        tvOutletID.setText(outletItem.getOutletId());
+        tvOutlet.setText(outletItem.getOutlet());
+        tvOutletID.setText("[" + outletItem.getOutletId() + "]");
         tvService.setText(outletItem.getServiceType());
         tvAddress.setText(outletItem.getAddress());
+
+        if(outletItem.getDelivered() != StateConsts.OUTLET_NOT_DELIVERED) {
+            btnComplete.setBackground(getResources().getDrawable(R.drawable.button_complete));
+            btnComplete.setText(getResources().getText(R.string.btn_reset));
+        } else {
+            btnComplete.setBackground(getResources().getDrawable(R.drawable.button_remove));
+            btnComplete.setText(getResources().getText(R.string.btn_complete));
+        }
 
         fragments = new StockFragment[tiers];
         for(int i = 0; i < tiers; i++) {
@@ -102,11 +119,12 @@ public class StockActivity extends AppCompatActivity
     void onClickBtnSave() {
         StockDB stockDB = new StockDB(StockActivity.this);
         OutletDB outletDB = new OutletDB(StockActivity.this);
-        for(int i = 0; i < tempOperationList.size(); i++) {
+        for (int i = 0; i < tempOperationList.size(); i++) {
             stockDB.updateStock(tempOperationList.get(i));
         }
 
         outletItem.setDelivered(StateConsts.OUTLET_NOT_DELIVERED);
+        outletItem.setDeliveredTime(DateUtil.getCurDateTime());
         outletDB.updateOutlet(outletItem);
 
         finish();
@@ -114,14 +132,21 @@ public class StockActivity extends AppCompatActivity
 
     @OnClick(R.id.btn_complete)
     void onClickBtnComplete() {
-        StockDB stockDB = new StockDB(StockActivity.this);
-        OutletDB outletDB = new OutletDB(StockActivity.this);
-        for(int i = 0; i < tempOperationList.size(); i++) {
-            stockDB.updateStock(tempOperationList.get(i));
-        }
+        if(outletItem.getDelivered() == StateConsts.OUTLET_NOT_DELIVERED) {
+            StockDB stockDB = new StockDB(StockActivity.this);
+            OutletDB outletDB = new OutletDB(StockActivity.this);
+            for (int i = 0; i < tempOperationList.size(); i++) {
+                stockDB.updateStock(tempOperationList.get(i));
+            }
 
-        outletItem.setDelivered(StateConsts.OUTLET_DELIVERED);
-        outletDB.updateOutlet(outletItem);
+            outletItem.setDelivered(StateConsts.OUTLET_DELIVERED);
+            outletItem.setDeliveredTime(DateUtil.getCurDateTime());
+            outletDB.updateOutlet(outletItem);
+        } else {
+            OutletDB outletDB = new OutletDB(StockActivity.this);
+            outletItem.setDelivered(StateConsts.OUTLET_NOT_DELIVERED);
+            outletDB.updateOutlet(outletItem);
+        }
 
         finish();
     }

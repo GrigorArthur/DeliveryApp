@@ -28,12 +28,16 @@ public class ReasonActivity extends AppCompatActivity
 {
     @Bind(R.id.reason_list)
     RecyclerView reasonList;
+    @Bind(R.id.tv_outlet)
+    TextView tvOutlet;
     @Bind(R.id.tv_outlet_id)
     TextView tvOutletID;
     @Bind(R.id.tv_service)
     TextView tvService;
     @Bind(R.id.tv_address)
     TextView tvAddress;
+    @Bind(R.id.btn_complete)
+    Button btnComplete;
 
     private OutletItem outletItem;
     private ReasonAdapter adapter;
@@ -48,9 +52,19 @@ public class ReasonActivity extends AppCompatActivity
 
         outletItem = (OutletItem) getIntent().getSerializableExtra("outlet");
 
-        tvOutletID.setText(outletItem.getOutletId());
+        tvOutlet.setText(outletItem.getOutlet());
+        tvOutletID.setText("[" + outletItem.getOutletId() + "]");
         tvService.setText(outletItem.getServiceType());
         tvAddress.setText(outletItem.getAddress());
+        tvAddress.setSelected(true);
+
+        if(outletItem.getDelivered() != StateConsts.OUTLET_NOT_DELIVERED) {
+            btnComplete.setBackground(getResources().getDrawable(R.drawable.button_complete));
+            btnComplete.setText(getResources().getText(R.string.btn_reset));
+        } else {
+            btnComplete.setBackground(getResources().getDrawable(R.drawable.button_remove));
+            btnComplete.setText(getResources().getText(R.string.btn_complete));
+        }
 
         reasonList.setHasFixedSize(true);
         mLinearLayoutManager = new LinearLayoutManager(ReasonActivity.this);
@@ -89,13 +103,19 @@ public class ReasonActivity extends AppCompatActivity
 
     @OnClick(R.id.btn_complete)
     void onClickBtnComplete() {
-        int position = adapter.getSelectedPos();
-        outletItem.setReason(position + 1);
-        outletItem.setDelivered(StateConsts.OUTLET_CANNOT_DELIVER);
+        if(outletItem.getDelivered() == StateConsts.OUTLET_NOT_DELIVERED) {
+            int position = adapter.getSelectedPos();
+            outletItem.setReason(position + 1);
+            outletItem.setDelivered(StateConsts.OUTLET_CANNOT_DELIVER);
 
-        OutletDB outletDB = new OutletDB(ReasonActivity.this);
-        outletDB.updateOutlet(outletItem);
-        outletDB.updateOutlet(outletItem);
+            OutletDB outletDB = new OutletDB(ReasonActivity.this);
+            outletDB.updateOutlet(outletItem);
+            outletDB.updateOutlet(outletItem);
+        } else {
+            OutletDB outletDB = new OutletDB(ReasonActivity.this);
+            outletItem.setDelivered(StateConsts.OUTLET_NOT_DELIVERED);
+            outletDB.updateOutlet(outletItem);
+        }
 
         finish();
     }

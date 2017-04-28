@@ -34,5 +34,7 @@ public class DBConsts {
     public static final String FIELD_STATUS = "status";
     public static final String FIELD_REMOVE = "remove";
     public static final String FIELD_REMOVE_ID = "remove_id";
+    public static final String FIELD_TITLE_ID = "title_id";
+    public static final String FIELD_SIZE = "size";
 
 }

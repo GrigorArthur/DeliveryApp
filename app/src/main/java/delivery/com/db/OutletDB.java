@@ -36,6 +36,42 @@ public class OutletDB extends DBHelper {
         return ret;
     }
 
+    public int getAllCount(String despatchID) {
+        int count = 0;
+        try {
+            String szWhere = DBConsts.FIELD_DESPATCH_ID + " = '" + despatchID + "'";
+
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                Cursor cursor = db.query(DBConsts.TABLE_NAME_OUTLET, null, szWhere, null, null, null, null);
+                count = cursor.getCount();
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public int getCompletedCount(String despatchID) {
+        int count = 0;
+        try {
+            String szWhere = DBConsts.FIELD_DESPATCH_ID + " = '" + despatchID + "' AND " + DBConsts.FIELD_DELIVERED + " <> 0";
+
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                Cursor cursor = db.query(DBConsts.TABLE_NAME_OUTLET, null, szWhere, null, null, null, null);
+                count = cursor.getCount();
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+
+        return count;
+    }
+
     public long addOutlet(OutletItem bean) {
         long ret = -1;
         try {
@@ -86,6 +122,18 @@ public class OutletDB extends DBHelper {
             synchronized (DB_LOCK) {
                 SQLiteDatabase db = getReadableDatabase();
                 db.delete(DBConsts.TABLE_NAME_OUTLET, szWhere, null);
+                db.close();
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void removeAllDatas() {
+        try {
+            synchronized (DB_LOCK) {
+                SQLiteDatabase db = getReadableDatabase();
+                db.delete(DBConsts.TABLE_NAME_OUTLET, null, null);
                 db.close();
             }
         } catch (IllegalStateException ex) {

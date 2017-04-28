@@ -5,4 +5,5 @@ package delivery.com.vo;
  */
 
 public class UploadDespatchResponseVo {
+    public int success;
 }

@@ -67,8 +67,6 @@ public class OutletActivity extends AppCompatActivity {
 
         adapter = new OutletAdapter(OutletActivity.this);
         outletList.setAdapter(adapter);
-
-
     }
 
     private void getOutlets() {

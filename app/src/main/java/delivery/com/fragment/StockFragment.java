@@ -59,8 +59,6 @@ public class StockFragment extends Fragment {
         adapter = new StockAdapter(StockFragment.this);
         stockList.setAdapter(adapter);
 
-        Log.v("Fragment", tier + " Refresh");
-
         getStocks();
 
         return v;

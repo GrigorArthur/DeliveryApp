@@ -43,6 +43,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     DBConsts.FIELD_SLOT + " INTEGER," +
                     DBConsts.FIELD_QTY + " INTEGER," +
                     DBConsts.FIELD_STATUS + " TEXT," +
+                    DBConsts.FIELD_TITLE_ID + " TEXT," +
+                    DBConsts.FIELD_SIZE + " TEXT," +
                     DBConsts.FIELD_REMOVE + " TEXT," +
                     DBConsts.FIELD_REMOVE_ID + " TEXT);";
 
